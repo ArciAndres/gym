@@ -85,15 +85,15 @@ class FetchEnv2(robot_env.RobotEnv):
             action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
 
             # Apply action to simulation.
-            utils.ctrl_set_action(self.sim, action)
-            utils.mocap_set_action(self.sim, action)
+            utils2.ctrl_set_action(self.sim, action)
+            utils2.mocap_set_action(self.sim, action)
 
     def _get_obs(self):
         # positions
         grip_pos = self.sim.data.get_site_xpos('robot0:grip')
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
         grip_velp = self.sim.data.get_site_xvelp('robot0:grip') * dt
-        robot_qpos, robot_qvel = utils.robot_get_obs(self.sim)
+        robot_qpos, robot_qvel = utils2.robot_get_obs(self.sim)
         if self.has_object:
             object_pos = self.sim.data.get_site_xpos('object0')
             # rotations
@@ -174,7 +174,7 @@ class FetchEnv2(robot_env.RobotEnv):
     def _env_setup(self, initial_qpos):
         for name, value in initial_qpos.items():
             self.sim.data.set_joint_qpos(name, value)
-        utils.reset_mocap_welds(self.sim)
+        utils2.reset_mocap_welds(self.sim)
         self.sim.forward()
 
         # Move end effector into position.
