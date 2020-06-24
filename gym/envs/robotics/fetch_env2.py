@@ -71,10 +71,10 @@ class FetchEnv2(robot_env.RobotEnv):
 
     def _set_action(self, action):
         assert action.shape == (8,)
-        action = action.copy()  # ensure that we don't change the action outside of this scope
+        actions = action.copy()  # ensure that we don't change the action outside of this scope
 
         for i in range(self.sim.model.nmocap):   
-
+            action = actions[4*i:4*i+4]
             pos_ctrl, gripper_ctrl = action[:3], action[3]
             pos_ctrl *= 0.05  # limit maximum change in position
             rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion
@@ -85,8 +85,8 @@ class FetchEnv2(robot_env.RobotEnv):
             action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
 
             # Apply action to simulation.
-            utils2.ctrl_set_action(self.sim, action)
-            utils2.mocap_set_action(self.sim, action)
+            utils2.ctrl_set_action(self.sim, action, i)
+            utils2.mocap_set_action(self.sim, action, i)
 
     def _get_obs(self):
         # positions
