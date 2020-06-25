@@ -40,13 +40,13 @@ def mocap_set_action(sim, action, robot_i):
     on the robot (for example the gripper wrist) is controlled with
     mocap bodies. In this case the action is the desired difference
     in position and orientation (quaternion), in world coordinates,
-    of the of the target body. The mocap is positioned relative to
+    of the target body. The mocap is positioned relative to
     the target body according to the delta, and the MuJoCo equality
     constraint optimizer tries to center the welded body on the mocap.
     """
     if sim.model.nmocap > 0:
         action, _ = np.split(action, ( 7, )) #(sim.model.nmocap * 7, )
-        action = action.reshape(sim.model.nmocap, 7)
+        action = action.reshape(1, 7)
 
         pos_delta = action[:, :3]
         quat_delta = action[:, 3:]

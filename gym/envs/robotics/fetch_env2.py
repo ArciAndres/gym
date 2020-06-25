@@ -179,15 +179,22 @@ class FetchEnv2(robot_env.RobotEnv):
 
         # Move end effector into position.
         #gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) + self.sim.data.get_site_xpos('robot0:grip')
-        gripper_target = np.array([0, 0, 0 ]) #+ self.sim.data.get_site_xpos('robot0:grip')
+        gripper_target0 = np.array([0, 0, 0 ]) + self.sim.data.get_site_xpos('robot0:grip')
+        gripper_target2 = np.array([0, 0, 0 ]) + self.sim.data.get_site_xpos('robot2:grip')
         gripper_rotation = np.array([0, 0., 0, 0.])
-        self.sim.data.set_mocap_pos('robot0:mocap', gripper_target)
+
+=
+        self.sim.data.set_mocap_pos('robot0:mocap', gripper_target0)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
+
+        self.sim.data.set_mocap_pos('robot2:mocap', gripper_target2)
+        self.sim.data.set_mocap_quat('robot2:mocap', gripper_rotation)
+
         for _ in range(10):
             self.sim.step()
 
         # Extract information for sampling goals.
-        self.initial_gripper_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
+        self.initial_gripper_xpos = self.sim.data.get_site_xpos('robot2:grip').copy()
         if self.has_object:
             self.height_offset = self.sim.data.get_site_xpos('object0')[2]
 
