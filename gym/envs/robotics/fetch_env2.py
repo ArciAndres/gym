@@ -98,8 +98,12 @@ class FetchEnv2(robot_env.RobotEnv):
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
         
         grip_velp = self.sim.data.get_site_xvelp('robot0:grip') * dt # Velocity calculation
+        grip1_velp = self.sim.data.get_site_xvelp('robot1:grip') * dt # Velocity calculation
 
-        robot_qpos, robot_qvel = utils2.robot_get_obs(self.sim)
+        robot_qpos, robot_qvel = utils2.robot_get_obs(self.sim, 0)
+        robot1_qpos, robot1_qvel = utils2.robot_get_obs(self.sim, 1)
+        
+
         if self.has_object:
             object_pos = self.sim.data.get_site_xpos('object0')
             # rotations
@@ -112,17 +116,27 @@ class FetchEnv2(robot_env.RobotEnv):
             object_velp -= grip_velp
         else:
             object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(0)
+
         gripper_state = robot_qpos[-2:]
         gripper_vel = robot_qvel[-2:] * dt  # change to a scalar if the gripper is made symmetric
+
+        gripper1_state = robot1_qpos[-2:]
+        gripper1_vel = robot1_qvel[-2:] * dt  # change to a scalar if the gripper is made symmetric
+
 
         if not self.has_object:
             achieved_goal = grip_pos.copy()
         else:
             achieved_goal = np.squeeze(object_pos.copy())
         obs = np.concatenate([
-            grip_pos, object_pos.ravel(), object_rel_pos.ravel(), gripper_state, object_rot.ravel(),
-            object_velp.ravel(), object_velr.ravel(), grip_velp, gripper_vel,
+            grip_pos, gripper_state, grip_velp, gripper_vel,
+            grip1_pos, gripper1_state, grip1_velp, gripper1_vel,
+            
+            object_pos.ravel(), object_rel_pos.ravel(), , object_rot.ravel(),
+            object_velp.ravel(), object_velr.ravel(), 
         ])
+
+
 
         return {
             'observation': obs.copy(),
@@ -208,7 +222,7 @@ class FetchEnv2(robot_env.RobotEnv):
 
         # Extract information for sampling goals.
         self.initial_gripper0_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
-        self.initial_gripper2_xpos = self.sim.data.get_site_xpos('robot1:grip').copy()
+        self.initial_gripper1_xpos = self.sim.data.get_site_xpos('robot1:grip').copy()
 
         #array([1.43489969, 1.26409969, 0.78586   ])
         if self.has_object:
