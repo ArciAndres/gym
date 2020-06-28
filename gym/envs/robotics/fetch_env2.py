@@ -203,7 +203,9 @@ class FetchEnv2(robot_env.RobotEnv):
             self.sim.step()
 
         # Extract information for sampling goals.
-        self.initial_gripper_xpos = self.sim.data.get_site_xpos('robot2:grip').copy()
+        self.initial_gripper0_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
+        self.initial_gripper2_xpos = self.sim.data.get_site_xpos('robot2:grip').copy()
+
         #array([1.43489969, 1.26409969, 0.78586   ])
         if self.has_object:
             self.height_offset = self.sim.data.get_site_xpos('object0')[2]
