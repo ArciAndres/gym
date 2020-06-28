@@ -93,8 +93,12 @@ class FetchEnv2(robot_env.RobotEnv):
     def _get_obs(self):
         # positions
         grip_pos = self.sim.data.get_site_xpos('robot0:grip')
+        grip1_pos = self.sim.data.get_site_xpos('robot1:grip')
+
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
-        grip_velp = self.sim.data.get_site_xvelp('robot0:grip') * dt
+        
+        grip_velp = self.sim.data.get_site_xvelp('robot0:grip') * dt # Velocity calculation
+
         robot_qpos, robot_qvel = utils2.robot_get_obs(self.sim)
         if self.has_object:
             object_pos = self.sim.data.get_site_xpos('object0')
@@ -184,7 +188,7 @@ class FetchEnv2(robot_env.RobotEnv):
         gripper_target0 = np.array([0, 0, 0 ]) + self.sim.data.get_site_xpos('robot0:grip')
         #[1.4349000000000003, 0.2641, 0.786]
 
-        gripper_target2 = np.array([0, 0, 0 ]) + self.sim.data.get_site_xpos('robot2:grip')
+        gripper_target2 = np.array([0, 0, 0 ]) + self.sim.data.get_site_xpos('robot1:grip')
         #[1.4349000000000003, 1.2641, 0.786]
 
         gripper_rotation = np.array([0, 0., 0, 0.])
@@ -196,15 +200,15 @@ class FetchEnv2(robot_env.RobotEnv):
         self.sim.data.set_mocap_pos('robot0:mocap', gripper_target0)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
 
-        self.sim.data.set_mocap_pos('robot2:mocap', gripper_target2)
-        self.sim.data.set_mocap_quat('robot2:mocap', gripper_rotation)
+        self.sim.data.set_mocap_pos('robot1:mocap', gripper_target2)
+        self.sim.data.set_mocap_quat('robot1:mocap', gripper_rotation)
 
         for _ in range(10):
             self.sim.step()
 
         # Extract information for sampling goals.
         self.initial_gripper0_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
-        self.initial_gripper2_xpos = self.sim.data.get_site_xpos('robot2:grip').copy()
+        self.initial_gripper2_xpos = self.sim.data.get_site_xpos('robot1:grip').copy()
 
         #array([1.43489969, 1.26409969, 0.78586   ])
         if self.has_object:
