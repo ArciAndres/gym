@@ -73,6 +73,8 @@ class FetchEnv2(robot_env.RobotEnv):
         assert action.shape == (8,)
         actions = action.copy()  # ensure that we don't change the action outside of this scope
 
+        utils2.reset_mocap2body_xpos(self.sim)
+
         for i in range(self.sim.model.nmocap):   
             action = actions[4*i:4*i+4]
             pos_ctrl, gripper_ctrl = action[:3], action[3]
@@ -180,10 +182,17 @@ class FetchEnv2(robot_env.RobotEnv):
         # Move end effector into position.
         #gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) + self.sim.data.get_site_xpos('robot0:grip')
         gripper_target0 = np.array([0, 0, 0 ]) + self.sim.data.get_site_xpos('robot0:grip')
+        #[1.4349000000000003, 0.2641, 0.786]
+
         gripper_target2 = np.array([0, 0, 0 ]) + self.sim.data.get_site_xpos('robot2:grip')
+        #[1.4349000000000003, 1.2641, 0.786]
+
         gripper_rotation = np.array([0, 0., 0, 0.])
 
-=
+        # mocap_pos
+        # array([[1.4349, 0.2641, 0.786 ],
+        #        [1.4349, 1.2641, 0.786 ]])
+
         self.sim.data.set_mocap_pos('robot0:mocap', gripper_target0)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
 
@@ -195,6 +204,7 @@ class FetchEnv2(robot_env.RobotEnv):
 
         # Extract information for sampling goals.
         self.initial_gripper_xpos = self.sim.data.get_site_xpos('robot2:grip').copy()
+        #array([1.43489969, 1.26409969, 0.78586   ])
         if self.has_object:
             self.height_offset = self.sim.data.get_site_xpos('object0')[2]
 

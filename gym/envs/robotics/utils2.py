@@ -51,7 +51,6 @@ def mocap_set_action(sim, action, robot_i):
         pos_delta = action[:, :3]
         quat_delta = action[:, 3:]
 
-        reset_mocap2body_xpos(sim)
         sim.data.mocap_pos[robot_i] = sim.data.mocap_pos[robot_i] + pos_delta
         sim.data.mocap_quat[robot_i] = sim.data.mocap_quat[robot_i] + quat_delta
 
@@ -83,8 +82,8 @@ def reset_mocap2body_xpos(sim):
             continue
 
         mocap_id = sim.model.body_mocapid[obj1_id]
-        if mocap_id != -1:
-            # obj1 is the mocap, obj2 is the welded body
+        if mocap_id != -1: # In Reach, and Fetch in general, it's not -1.
+            # obj1 is the mocap, obj2 is the welded body (grippers in Fetch)
             body_idx = obj2_id
         else:
             # obj2 is the mocap, obj1 is the welded body
