@@ -65,8 +65,8 @@ class FetchEnv2(robot_env.RobotEnv):
         if self.block_gripper:
             self.sim.data.set_joint_qpos('robot0:l_gripper_finger_joint', 0.)
             self.sim.data.set_joint_qpos('robot0:r_gripper_finger_joint', 0.)
-            self.sim.data.set_joint_qpos('robot2:l_gripper_finger_joint', 0.)
-            self.sim.data.set_joint_qpos('robot2:r_gripper_finger_joint', 0.)
+            self.sim.data.set_joint_qpos('robot1:l_gripper_finger_joint', 0.)
+            self.sim.data.set_joint_qpos('robot1:r_gripper_finger_joint', 0.)
             self.sim.forward()
 
     def _set_action(self, action):
@@ -131,9 +131,8 @@ class FetchEnv2(robot_env.RobotEnv):
         obs = np.concatenate([
             grip_pos, gripper_state, grip_velp, gripper_vel,
             grip1_pos, gripper1_state, grip1_velp, gripper1_vel,
-            
-            object_pos.ravel(), object_rel_pos.ravel(), , object_rot.ravel(),
-            object_velp.ravel(), object_velr.ravel(), 
+            object_pos.ravel(), object_rel_pos.ravel(), object_rot.ravel(), 
+            object_velp.ravel(), object_velr.ravel()
         ])
 
 
@@ -221,7 +220,7 @@ class FetchEnv2(robot_env.RobotEnv):
             self.sim.step()
 
         # Extract information for sampling goals.
-        self.initial_gripper0_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
+        self.initial_gripper_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
         self.initial_gripper1_xpos = self.sim.data.get_site_xpos('robot1:grip').copy()
 
         #array([1.43489969, 1.26409969, 0.78586   ])

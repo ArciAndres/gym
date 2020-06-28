@@ -12,7 +12,7 @@ def robot_get_obs(sim, robot_i):
     a robot.
     """
     if sim.data.qpos is not None and sim.model.joint_names:
-        names = [n for n in sim.model.joint_names if n.startswith('robot'+robot_i)]
+        names = [n for n in sim.model.joint_names if n.startswith('robot'+str(robot_i))]
         return (
             np.array([sim.data.get_joint_qpos(name) for name in names]),
             np.array([sim.data.get_joint_qvel(name) for name in names]),
